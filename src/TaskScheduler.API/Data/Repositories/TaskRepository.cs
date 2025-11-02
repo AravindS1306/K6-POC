@@ -15,14 +15,16 @@ namespace TaskScheduler.API.Data.Repositories
 
         public async Task AddTaskAsync(TaskModel task)
         {
+            task.Id = Guid.NewGuid();
             await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TaskModel>> GetAllTasksAsync()
         {
             return await _context.Tasks
                                  .AsNoTracking()
-                                 .OrderByDescending(t => t.NextRunTime)
+                                 .OrderByDescending(t => t.CreatedAt)
                                  .ToListAsync();
         }
 

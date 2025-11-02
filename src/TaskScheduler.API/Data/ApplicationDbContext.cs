@@ -18,6 +18,7 @@ namespace TaskScheduler.API.Data
             modelBuilder.Entity<TaskModel>()
                         .ToTable("Tasks")
                         .HasKey(t => t.Id);
+            modelBuilder.Entity<TaskModel>().ToTable("tasks");
         }
     }
 }

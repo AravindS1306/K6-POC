@@ -4,6 +4,7 @@ using TaskScheduler.API.Data.Repositories;
 using TaskScheduler.API.Services;
 using TaskScheduler.API.Services.Interfaces;
 using ITaskRepository = TaskScheduler.API.Data.Interfaces.ITaskRepository;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace TaskScheduler.API.Configurations
 {
@@ -13,7 +14,7 @@ namespace TaskScheduler.API.Configurations
         {
             //DbContext
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
 
             // Services
             services.AddScoped<ITaskService, TaskService>();
