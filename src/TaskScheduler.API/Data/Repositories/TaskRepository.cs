@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskScheduler.API.Data.Interfaces;
+using TaskScheduler.API.Data;
+using TaskScheduler.Shared.Interfaces;
 using TaskScheduler.Shared.Models;
 
-namespace TaskScheduler.API.Data.Repositories
+namespace TaskScheduler.API.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
@@ -13,45 +14,23 @@ namespace TaskScheduler.API.Data.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<TaskModel>> GetDueTasksAsync()
+        {
+            var now = DateTime.UtcNow;
+            return await _context.Tasks
+                .Where(t => t.Status == 0 && t.CreatedAt <= now)
+                .ToListAsync();
+        }
+
         public async Task AddTaskAsync(TaskModel task)
         {
-            task.Id = Guid.NewGuid();
             await _context.Tasks.AddAsync(task);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TaskModel>> GetAllTasksAsync()
-        {
-            return await _context.Tasks
-                                 .AsNoTracking()
-                                 .OrderByDescending(t => t.CreatedAt)
-                                 .ToListAsync();
-        }
-
         public async Task<TaskModel?> GetTaskByIdAsync(Guid id)
         {
-            return await _context.Tasks
-                                 .AsNoTracking()
-                                 .FirstOrDefaultAsync(t => t.Id == id);
-        }
-
-        public async Task UpdateTaskAsync(TaskModel task)
-        {
-            _context.Tasks.Update(task);
-        }
-
-        public async Task DeleteTaskAsync(Guid id)
-        {
-            var task = await _context.Tasks.FindAsync(id);
-            if (task != null)
-            {
-                _context.Tasks.Remove(task);
-            }
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
+            return await _context.Tasks.FindAsync(id);
         }
     }
 }

@@ -15,10 +15,19 @@ namespace TaskScheduler.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<TaskModel>()
-                        .ToTable("Tasks")
-                        .HasKey(t => t.Id);
-            modelBuilder.Entity<TaskModel>().ToTable("tasks");
+            var entity = modelBuilder.Entity<TaskModel>().ToTable("tasks");
+            entity.ToTable("tasks");
+
+            entity.Property(t => t.Id).HasColumnName("id");
+            entity.Property(t => t.Name).HasColumnName("name");
+            entity.Property(t => t.CronExpression).HasColumnName("cronexpression");
+            entity.Property(t => t.TaskType).HasColumnName("tasktype");
+            entity.Property(t => t.TargetUrl).HasColumnName("targeturl");
+            entity.Property(t => t.NextRunTime).HasColumnName("nextruntime");
+            entity.Property(t => t.LastRunTime).HasColumnName("lastruntime");
+            entity.Property(t => t.CreatedAt).HasColumnName("createdat");
+            entity.Property(t => t.Status).HasColumnName("status");
+            entity.Property(t => t.LastRunMessage).HasColumnName("lastrunmessage");
         }
     }
 }

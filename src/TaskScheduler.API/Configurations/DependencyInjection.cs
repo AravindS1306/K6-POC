@@ -1,10 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TaskScheduler.API.Data;
-using TaskScheduler.API.Data.Repositories;
-using TaskScheduler.API.Services;
-using TaskScheduler.API.Services.Interfaces;
-using ITaskRepository = TaskScheduler.API.Data.Interfaces.ITaskRepository;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
+﻿using TaskScheduler.API.Repositories;
+using TaskScheduler.Shared.Interfaces;
 
 namespace TaskScheduler.API.Configurations
 {
@@ -12,18 +7,8 @@ namespace TaskScheduler.API.Configurations
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
-            //DbContext
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
-
             // Services
-            services.AddScoped<ITaskService, TaskService>();
-
-            // Repository
             services.AddScoped<ITaskRepository, TaskRepository>();
-
-            // Utilities (optional)
-            // services.AddSingleton<ILoggingUtility, LoggingUtility>();
 
             return services;
         }

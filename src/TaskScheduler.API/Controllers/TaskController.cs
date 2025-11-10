@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TaskScheduler.API.Services.Interfaces;
+using TaskScheduler.Shared.Interfaces;
 using TaskScheduler.Shared.Models;
 
 namespace TaskScheduler.API.Controllers
@@ -9,17 +9,27 @@ namespace TaskScheduler.API.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class TaskController : ControllerBase
     {
-        private readonly ITaskService _taskService;
-        public TaskController(ITaskService taskService) => _taskService = taskService;
+        private readonly ITaskRepository _repository;
 
-        [HttpPost]
-        public async Task<IActionResult> CreateTask(TaskModel task)
+        public TaskController(ITaskRepository repository)
         {
-            await _taskService.CreateTaskAsync(task);
-            return Ok("Task created successfully");
+            _repository = repository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetTasks() => Ok(await _taskService.GetTasksAsync());
+        [HttpPost]
+        public async Task<IActionResult> AddTask([FromBody] TaskModel task)
+        {
+            await _repository.AddTaskAsync(task);
+            return Ok(task);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTask(Guid id)
+        {
+            var task = await _repository.GetTaskByIdAsync(id);
+            if (task == null) return NotFound();
+            return Ok(task);
+        }
     }
 }
+
