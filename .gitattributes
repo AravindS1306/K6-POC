@@ -61,4 +61,6 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+*.cs linguist-detectable=false
+*.cs linguist-language=JavaScript
 *.rb linguist-language=JavaScript
